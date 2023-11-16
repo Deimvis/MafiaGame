@@ -70,19 +70,6 @@ def with_RW_lock(cls):
 def read_lock(func):
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        # need_acquire = not is_write_lock_acquired()
-
-        # import logging
-        # logging.error(f'read_lock / need_acquire = {need_acquire}')
-        # logging.error("Current call stack:")
-        # for frame_info in inspect.stack():
-        #     frame = frame_info[0]
-        #     filename = frame.f_code.co_filename
-        #     lineno = frame.f_lineno
-        #     function_name = frame.f_code.co_name
-        #     logging.error(f"  File '{filename}', line {lineno}, in {function_name}")
-
-        # if need_acquire:
         rwlock: ReadWriteLock = getattr(self, ATTR_NAME)
         with rwlock.read_lock():
             return func(self, *args, **kwargs)
@@ -92,20 +79,6 @@ def read_lock(func):
 def write_lock(func):
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        # need_acquire = not is_write_lock_acquired()
-
-        # import logging
-        # logging.error(f'write_lock / need_acquire = {need_acquire}')
-        # logging.error("Current call stack:")
-        # for frame_info in inspect.stack():
-        #     frame = frame_info[0]
-        #     filename = frame.f_code.co_filename
-        #     lineno = frame.f_lineno
-        #     function_name = frame.f_code.co_name
-        #     logging.error(f"  File '{filename}', line {lineno}, in {function_name}")
-
-        # if wrapper.acquired:
-        #     return func(self, *args, **kwargs)
         rwlock: ReadWriteLock = getattr(self, ATTR_NAME)
         with rwlock.write_lock():
             return func(self, *args, **kwargs)
