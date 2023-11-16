@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+service Coordinator {
+    rpc Connect(User) returns (stream Room) {}
+    rpc Disconnect(DisconnectRequest) returns (google.protobuf.Empty) {}
+    rpc SendMessage(Chat.Message) returns (google.protobuf.Empty) {}
+    rpc BeginVote(User) returns (google.protobuf.Empty) {}
+    rpc Vote(VoteRequest) returns (google.protobuf.Empty) {}
+    rpc MafiaVote(VoteRequest) returns (google.protobuf.Empty) {}
+    rpc SheriffVote(VoteRequest) returns (google.protobuf.Empty) {}
+    rpc Expose(ExposeRequest) returns (google.protobuf.Empty) {}
+}
+
+message DisconnectRequest {
+    User User = 1;
+    Room.RoomId RoomId = 2;
+}
+
+message VoteRequest {
+    User User = 1;
+    User SuspectUser = 2;
+}
+
+message ExposeRequest {
+    User User = 1;
+    User UserToExpose = 2;
+}
+
+message User {
+    string Username = 1;
+}
+
+message Player {
+    enum PlayerRole {
+        PR_UNKNOWN = 0;
+        PR_CIVILIAN = 1;
+        PR_MAFIA = 2;
+        PR_SHERIFF = 3;
+    }
+
+    enum PlayerStatus {
+        PS_UNKNOWN = 0;
+        PS_ALIVE = 1;
+        PS_DEAD = 2;
+    }
+
+    enum PlayerExposeStatus {
+        PES_UNKNOWN = 0;
+        PES_EXPOSED_TO_SHERIFFS = 1;
+        PES_EXPOSED_TO_EVERYONE = 2;
+    }
+
+    string Username = 1;
+    PlayerRole Role = 2;
+    PlayerStatus Status = 3;
+    optional string Color = 4;
+    bool Exposed = 5;
+}
+
+message Spectator {
+    string Username = 1;
+}
+
+message Chat {
+    message Message {
+        string AuthorUsername = 1;
+        string Text = 2;
+    }
+
+    repeated Message Messages = 1;
+}
+
+message Voting {
+    message Vote {
+        string SuspectUsername = 1;
+        int64 VotesNumber = 2;
+    }
+
+    repeated Vote Votes = 1;
+}
+
+message EventBus {
+    message Event {
+        int64 Index = 1;
+        string Message = 2;
+    }
+
+    repeated Event Events = 1;
+}
+
+message Room {
+    message RoomId {
+        string Value = 1;
+    }
+
+    enum RoomStatus {
+        UNKNOWN = 0;
+        WAITING_FOR_PLAYERS = 1;
+        CHAT_PHASE = 2;
+        VOTE_PHASE = 3;
+        NIGHT_PHASE = 4;
+        MAFIA_WON = 5;
+        MAFIA_LOST = 6;
+    }
+
+    RoomId Id = 1;
+    RoomStatus Status = 2;
+    GameRules GameRules = 3;
+    repeated Player Players = 4;
+    repeated Spectator Spectators = 5;
+    optional Chat Chat = 6;
+    optional Voting Voting = 7;
+    optional EventBus EventBus = 8;
+    int64 DayNumber = 9;
+}
+
+message GameRules {
+    int64 ActivePlayersNumber = 1;
+    int64 MafiaNumber = 2;
+    int64 SheriffNumber = 3;
+}

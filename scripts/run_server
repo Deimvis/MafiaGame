@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+
+PYTHONPATH=$PYTHONPATH:$(pwd) \
+PYTHONPATH=$PYTHONPATH:$(pwd)/proto \
+python server/main.py server/configs/default.json

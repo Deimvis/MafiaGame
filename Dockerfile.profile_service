@@ -1,0 +1,12 @@
+FROM python:3.11.2
+
+ENV VENV=/venv
+ENV PATH="$VENV/bin:$PATH"
+
+COPY requirements.txt requirements.txt
+RUN python -m venv $VENV && . venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+
+COPY /services/profile/ /services/profile/
+COPY /scripts/ /scripts/
+
+ENTRYPOINT [ "/scripts/run_profile_service" ]

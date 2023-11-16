@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+
+  coordinator:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    command: /server/configs/default.json
+    ports:
+      - "2000:2000"
+    env_file:
+      - .env
+    depends_on:
+      - profile_service
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    command: Alice
+    stdin_open: true
+    environment:
+      - SERVER_HOST=coordinator
+      - SERVER_PORT=2000
+    ports:
+      - "10001:10001"
+    env_file:
+      - .env
+    depends_on:
+      - coordinator
+
+  profile_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.profile_service
+    command: "--host 0.0.0.0 --port 8000"
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.2
+    container_name: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    restart: always
+
+
+volumes:
+  postgres_data:

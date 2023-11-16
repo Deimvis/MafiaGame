@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+SERVER_HOST="${SERVER_HOST:-localhost}"
+SERVER_PORT="${SERVER_PORT:-2000}"
+
+PYTHONPATH=$PYTHONPATH:$(pwd) \
+PYTHONPATH=$PYTHONPATH:$(pwd)/proto \
+python client/main.py --username $1 --server-host=$SERVER_HOST --server-port=$SERVER_PORT

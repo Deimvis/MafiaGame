@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    LC_ALL=C find venv -type f -exec sed -i '' 's/from collections import Mapping/from collections.abc import Mapping/g' {} \;
+else
+    LC_ALL=C find venv -type f -exec sed -i 's/from collections import Mapping/from collections.abc import Mapping/g' {} \;
+fi

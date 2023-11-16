@@ -1,0 +1,7 @@
+{
+    "host": "0.0.0.0",
+    "port": 2000,
+    "active_players_number": 4,
+    "mafia_number": 1,
+    "sheriff_number": 1
+}

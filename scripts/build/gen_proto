@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+python -m grpc_tools.protoc -I proto proto/mafia.proto --python_out=proto --grpc_python_out=proto
